@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import YouTube from 'react-youtube';
 import { motion } from 'framer-motion';
 
-const Youtube = () => {
+const Song = () => {
   const [songs, setSongs] = useState([]);
   const [videoUrl, setVideoUrl] = useState('');
   const motionRef = useRef(null);
@@ -13,7 +13,6 @@ const Youtube = () => {
     return match ? match[1] : null;
   };
 
-  // Add new song to playlist
   const addSong = () => {
     const videoId = extractVideoId(videoUrl);
     if (videoId) {
@@ -81,4 +80,4 @@ const Youtube = () => {
   );
 };
 
-export default Youtube;
+export default Song;

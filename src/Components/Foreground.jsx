@@ -10,6 +10,7 @@ import Chatgpt from './Chatgpt';
 import { BsStars } from "react-icons/bs";
 import { FaYoutube } from "react-icons/fa6";
 import Spotify from './Spotify';
+import Song from './Song';
 
 const Foreground = () => {
   const ref = useRef(null); 
@@ -93,7 +94,7 @@ const Foreground = () => {
       {showPlaylist && <Player ref={ref}/>}
 
       {showQuill && <Quill/>}
-      {showYT && <Youtube/>}
+      {showYT && <Song/>}
 
       {showAi  && 
       <Chatgpt motionRef={ref}/>}
