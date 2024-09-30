@@ -8,7 +8,6 @@ import Quill from './Quill';
 import { FaSpotify } from "react-icons/fa";
 import Chatgpt from './Chatgpt';
 import { BsStars } from "react-icons/bs";
-import Youtube from './youtube';
 import { FaYoutube } from "react-icons/fa6";
 import Spotify from './Spotify';
 
@@ -79,7 +78,7 @@ const Foreground = () => {
         <input
           type="date"
           defaultValue={Date()}
-          optional
+          optional={true}
           onChange={(e) => setDate(e.target.value)}
           className='mb-2 p-2 bg-[transparent] text-white rounded'
         />
