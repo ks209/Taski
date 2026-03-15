@@ -1,82 +1,36 @@
-// import React from 'react';
-// import { FaRegFileAlt } from "react-icons/fa";
-// import { LuDownload } from "react-icons/lu";
-// import { IoClose } from "react-icons/io5";
-// import { motion } from 'framer-motion';
-
-// const Card = ({ data, reference, onToggleCompleted, onRemove }) => {
-//     const curr = new Date();
-
-//     const handleResize = (event, info) => {
-//         setSize({
-//           width: size.width + info.delta.x, // Adjust width as the user drags horizontally
-//           height: size.height + info.delta.y, // Adjust height as the user drags vertically
-//         });
-//       };
-
-//   return (  
-//     <div className='pr-10' onDrag={handleResize}>
-
-//     <motion.div
-//       drag
-//       dragConstraints={reference}
-//       whileDrag={{ scale: 1.2 }}
-//       dragTransition={{ bounceStiffness: 100, bounceDamping: 10 }}
-//       className='relative w-60 h-72 bg-sky-200 rounded-[40px] bg-zinc-900/90 text-white py-10 px-8 overflow-hidden flex-shrink-0'
-//       >
-
-//         <div className='flex justify-between'>
-//       <FaRegFileAlt />
-//           <button onClick={onRemove}>
-//             <IoClose />
-//           </button>
-//         </div>
-//         <div className='flex flex-col justify-between h-[70%] '>
-//       <p className='text-sm leading-tight mt-5 font-semibold'>{data.text}</p>
-
-//       <p>{data.date}<span>
-//         </span>
-//         </p>
-//         </div>
-      
-//           <button onClick={onToggleCompleted}>
-//       <div className={`footer ${data.completed ? "bg-green-800" : "bg-red-800"} absolute bottom-0 left-0 w-full  semibold`}>
-//         <div className='flex items-center justify-between px-8 py-3 mb-3'>
-//             {data.completed ? "Done" : "Not Done"}
-//         </div>
-//       </div>
-//           </button>
-//     </motion.div>
-//         </div>
-//   );
-// };
-
-// export default Card;
-
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { FaRegFileAlt } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { GoArrowDownRight } from "react-icons/go";
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 
 const Card = ({ data, reference, onToggleCompleted, onRemove }) => {
-  const [size, setSize] = useState({ width: 180, height: 220 }); 
-  const [isResizing, setIsResizing] = useState(false); 
-  const resizeRef = useRef(null); 
-  
-  
+  const [size, setSize] = useState({ width: 220, height: 240 });
+  const [isResizing, setIsResizing] = useState(false);
+
+  const MIN_WIDTH = 200;
+  const MIN_HEIGHT = 200;
+  const MAX_WIDTH = 500;
+  const MAX_HEIGHT = 400;
+
   const startResizing = (e) => {
     e.preventDefault();
     setIsResizing(true);
   };
 
   const handleMouseMove = (e) => {
-    if (isResizing) {
-      setSize((prevSize) => ({
-        width: Math.max(180, prevSize.width + e.movementX), // Min width constraint
-        height: Math.max(220, prevSize.height + e.movementY), // Min height constraint
-      }));
-    }
+    if (!isResizing) return;
+
+    setSize((prev) => ({
+      width: Math.min(
+        MAX_WIDTH,
+        Math.max(MIN_WIDTH, prev.width + e.movementX)
+      ),
+      height: Math.min(
+        MAX_HEIGHT,
+        Math.max(MIN_HEIGHT, prev.height + e.movementY)
+      ),
+    }));
   };
 
   const stopResizing = () => {
@@ -85,55 +39,87 @@ const Card = ({ data, reference, onToggleCompleted, onRemove }) => {
 
   useEffect(() => {
     if (isResizing) {
-      window.addEventListener('mousemove', handleMouseMove);
-      window.addEventListener('mouseup', stopResizing);
-    } else {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', stopResizing);
+      window.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("mouseup", stopResizing);
     }
+
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', stopResizing);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", stopResizing);
     };
   }, [isResizing]);
 
   return (
-    <div className='pr-10'>
-      <motion.div
-        drag={!isResizing}
-        dragConstraints={reference}
-        whileDrag={{ scale: 1.05  }}
-        dragTransition={{ bounceStiffness: 10, bounceDamping: 10 }}
-        className='relative bg-sky-200 rounded-[20px] bg-zinc-900/90 text-white py-6 px-4 overflow-hidden flex-shrink-0'
-        style={{ width: size.width, height: size.height }}
-      >
-        <div className='flex justify-between'>
+    <motion.div
+      drag={!isResizing}
+      dragConstraints={reference}
+      whileDrag={{
+        scale: 1.05,
+        boxShadow: "0px 20px 40px rgba(0,0,0,0.5)",
+      }}
+      dragTransition={{ bounceStiffness: 120, bounceDamping: 14 }}
+      className="
+        relative
+        bg-zinc-900/90
+        backdrop-blur-md
+        border border-zinc-700
+        rounded-xl
+        text-white
+        shadow-lg
+        flex flex-col
+        overflow-hidden
+      "
+      style={{ width: size.width, height: size.height }}
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 py-2 border-b border-zinc-700">
+        <div className="flex items-center gap-2 text-zinc-300 text-sm">
           <FaRegFileAlt />
-          <button onClick={onRemove}>
-            <IoClose />
-          </button>
+          <span className="font-medium">Task</span>
         </div>
 
-        <div className='flex flex-col justify-between h-[70%]'>
-          <p className='text-sm leading-tight mt-5 font-semibold'>{data.text}</p>
-          <p>{data.date}</p>
-        </div>
-
-        <button onClick={onToggleCompleted}>
-          <div className={`footer ${data.completed ? "bg-green-800" : "bg-red-800"} absolute bottom-0 left-0 w-full  semibold`}>
-            <div className='flex items-center justify-between px-6 py-2 mb-1'>
-              {data.completed ? "Done" : "Not Done"}
-            </div>
-          </div>
+        <button
+          onClick={onRemove}
+          className="text-zinc-400 hover:text-red-400 transition"
+        >
+          <IoClose size={18} />
         </button>
+      </div>
 
-        <div
-          ref={resizeRef}
-          className="absolute bottom-0 right-0 w-[fit-content] h-[fit-content] p-[4px]  cursor-se-resize"
-          onMouseDown={startResizing}
-        ><GoArrowDownRight /></div>
-      </motion.div>
-    </div>
+      {/* Content */}
+      <div className="flex flex-col justify-between flex-1 p-4 overflow-hidden">
+        <div className="text-sm font-semibold break-words leading-snug">
+          {data.text}
+        </div>
+      </div>
+
+      {/* Status */}
+      <button
+        onClick={onToggleCompleted}
+        className={`text-xs py-2 text-center transition
+        ${
+          data.completed
+            ? "bg-green-700/40 text-green-300"
+            : "bg-red-700/40 text-red-300"
+        }`}
+      >
+        {data.completed ? "Completed" : "Pending"}
+      </button>
+
+      {/* Resize Handle */}
+      <div
+        onMouseDown={startResizing}
+        className="
+          absolute bottom-1 right-1
+          text-zinc-400
+          hover:text-white
+          cursor-se-resize
+          p-1
+        "
+      >
+        <GoArrowDownRight size={16} />
+      </div>
+    </motion.div>
   );
 };
 
