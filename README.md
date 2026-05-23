@@ -9,6 +9,7 @@ It combines essential developer utilities into a single clean interface so you d
 ## 🌐 Live Demo
 
 https://taski-six.vercel.app
+<img width="1920" height="941" alt="image" src="https://github.com/user-attachments/assets/c0880f7f-896a-49be-885b-ae3819bbb371" />
 
 ---
 
